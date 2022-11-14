@@ -45,3 +45,38 @@ describe("/api/topics", () => {
       });
   });
 });
+
+describe("/api/articles", () => {
+  test("GET- 200: responds with an array of objects. each object proprties should be author,title,article_id,topic, created at, votes and comment_count", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        const expected = [
+          "author",
+          "title",
+          "article_id",
+          "topic",
+          "created_at",
+          "votes",
+          "comment_count",
+        ];
+        expect(articles.length).toBe(12);
+        expect(articles).toBeInstanceOf(Array);
+
+        articles.forEach((article) => {
+          expect(Object.keys(article)).toEqual(expected);
+        });
+      });
+  });
+
+  test("GET- 200: responds with an array of objects sorted by date in descending order ", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+});
