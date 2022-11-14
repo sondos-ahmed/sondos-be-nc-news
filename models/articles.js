@@ -17,6 +17,12 @@ exports.selectArticleById = (article_id) => {
     SELECT * FROM articles WHERE article_id=$1
     ;`;
   return db.query(selectQuery, [article_id]).then(({ rows }) => {
+    if (!rows[0]) {
+      return Promise.reject({
+        status: 400,
+        message: "Bad request",
+      });
+    }
     return rows[0];
   });
 };

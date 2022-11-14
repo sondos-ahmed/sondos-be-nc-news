@@ -11,7 +11,7 @@ app.get("/api/articles", getAllArticles);
 app.get("/api/articles/:article_id", getArticleById);
 
 app.use((err, req, res, next) => {
-  res.status(err.status).send(err);
+  res.status(err.status).send({ message: err.message });
 });
 
 app.all("/*", (req, res) => {

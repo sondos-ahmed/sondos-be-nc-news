@@ -64,7 +64,6 @@ describe("/api/articles", () => {
         ];
         expect(articles.length).toBe(12);
         expect(articles).toBeInstanceOf(Array);
-
         articles.forEach((article) => {
           expect(Object.keys(article)).toEqual(expected);
         });
@@ -97,6 +96,15 @@ describe("/api/articles/:article_id", () => {
           created_at: "2020-08-03T13:14:00.000Z",
           votes: 0,
         });
+      });
+  });
+
+  test("GET - 400: responds with bad request when query unvalid id.", () => {
+    return request(app)
+      .get("/api/articles/1000")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad request");
       });
   });
 });

@@ -8,7 +8,11 @@ exports.getAllArticles = (req, res, next) => {
 
 exports.getArticleById = (req, res, next) => {
   const id = req.params.article_id;
-  selectArticleById(id).then((article) => {
-    res.send({ article });
-  });
+  selectArticleById(id)
+    .then((article) => {
+      res.send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
