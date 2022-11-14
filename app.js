@@ -3,8 +3,6 @@ const { getAllTopics } = require("./controllers/topics");
 
 const app = express();
 
-app.use(express.json());
-
 app.get("/api/topics", getAllTopics);
 
 app.use((err, req, res, next) => {

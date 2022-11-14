@@ -34,6 +34,7 @@ describe("/api/topics", () => {
       .expect(200)
       .then(({ body }) => {
         const { topics } = body;
+        expect(topics.length).toBe(3);
         expect(topics).toBeInstanceOf(Array);
         topics.forEach((topic) => {
           expect(topic).toMatchObject({
