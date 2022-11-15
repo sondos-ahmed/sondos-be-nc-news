@@ -151,6 +151,14 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body.message).toEqual("Bad request");
       });
   });
+  test("GET - 404: responds an error of bad request", () => {
+    return request(app)
+      .get("/api/articles/2000/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toEqual("Route not found");
+      });
+  });
 });
 
 // describe("", () => {

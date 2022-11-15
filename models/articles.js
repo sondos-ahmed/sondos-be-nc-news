@@ -24,6 +24,9 @@ exports.selectArticleById = (article_id) => {
     SELECT * FROM articles WHERE article_id=$1
     ;`;
   return db.query(selectQuery, [article_id]).then(({ rows }) => {
+    if (!rows[0]) {
+      return Promise.reject();
+    }
     return rows[0];
   });
 };
