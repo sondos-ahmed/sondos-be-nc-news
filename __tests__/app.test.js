@@ -64,7 +64,6 @@ describe("/api/articles", () => {
         ];
         expect(articles.length).toBe(12);
         expect(articles).toBeInstanceOf(Array);
-
         articles.forEach((article) => {
           expect(Object.keys(article)).toEqual(expected);
         });
@@ -77,6 +76,35 @@ describe("/api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+});
+describe("/api/articles/:article_id", () => {
+  test("GET - 200: responds with an object of the corresponding id ", () => {
+    return request(app)
+      .get("/api/articles/5")
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+
+        expect(article).toEqual({
+          article_id: 5,
+          title: "UNCOVERED: catspiracy to bring down democracy",
+          topic: "cats",
+          author: "rogersop",
+          body: "Bastet walks amongst us, and the cats are taking arms!",
+          created_at: "2020-08-03T13:14:00.000Z",
+          votes: 0,
+        });
+      });
+  });
+
+  test("GET - 400: responds with bad request when query with invalid id.", () => {
+    return request(app)
+      .get("/api/articles/fakedata")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad request");
       });
   });
 });
