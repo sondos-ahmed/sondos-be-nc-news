@@ -11,7 +11,11 @@ app.get("/api/articles", getAllArticles);
 app.get("/api/articles/:article_id", getArticleById);
 
 app.use((err, req, res, next) => {
-  res.status(err.status).send({ message: err.message });
+  if (err.status && err.message) {
+    res.status(err.status).send({ message: err.message });
+  } else {
+    next(err);
+  }
 });
 
 app.all("/*", (req, res) => {

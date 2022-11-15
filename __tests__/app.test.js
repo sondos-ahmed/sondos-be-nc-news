@@ -99,9 +99,9 @@ describe("/api/articles/:article_id", () => {
       });
   });
 
-  test("GET - 400: responds with bad request when query unvalid id.", () => {
+  test("GET - 400: responds with bad request when query with invalid id.", () => {
     return request(app)
-      .get("/api/articles/1000")
+      .get("/api/articles/fakedata")
       .expect(400)
       .then(({ body }) => {
         expect(body.message).toBe("Bad request");
