@@ -1,3 +1,4 @@
+const { rows } = require("pg/lib/defaults");
 const db = require("../db/connection");
 
 exports.selectAllArticles = () => {
@@ -25,4 +26,15 @@ exports.selectArticleById = (article_id) => {
   return db.query(selectQuery, [article_id]).then(({ rows }) => {
     return rows[0];
   });
+};
+
+exports.selectArticleComments = (article_id) => {
+  return db
+    .query(
+      "SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at ASC;",
+      [article_id]
+    )
+    .then(({ rows }) => {
+      return rows;
+    });
 };

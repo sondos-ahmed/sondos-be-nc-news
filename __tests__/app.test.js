@@ -108,3 +108,52 @@ describe("/api/articles/:article_id", () => {
       });
   });
 });
+
+describe("/api/articles/:article_id/comments", () => {
+  test("GET - 200: responds with an array of comments objects for the specified article id ", () => {
+    return request(app)
+      .get("/api/articles/9/comments")
+      .expect(200)
+      .then(({ body }) => {
+        // Check the number of comments for article_id 9.
+        expect(body.comments).toHaveLength(2);
+
+        // Sorted by the most recent comments first.
+        expect(body.comments).toBeSortedBy("created_at");
+
+        // Check object properties.
+        body.comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+          });
+        });
+      });
+  });
+
+  test("GET - 200: responds with empty array if there isn't any comment on the specified article", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
+      });
+  });
+
+  test("GET - 400: responds an error of bad request", () => {
+    return request(app)
+      .get("/api/articles/article/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toEqual("Bad request");
+      });
+  });
+});
+
+// describe("", () => {
+//   test("", () => {});
+// });
+//describe("",()=>{test("",()=>{})});
