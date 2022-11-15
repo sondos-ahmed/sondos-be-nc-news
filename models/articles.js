@@ -52,12 +52,6 @@ exports.insertComment = (article_id, newcomment) => {
       values
     )
     .then(({ rows }) => {
-      if (!rows[0]) {
-        return Promise.reject({
-          status: 400,
-          message: "User not found",
-        });
-      }
       return rows[0];
     })
     .catch((err) => {
