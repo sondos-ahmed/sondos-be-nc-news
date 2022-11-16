@@ -107,6 +107,72 @@ describe("/api/articles/:article_id", () => {
         expect(body.message).toBe("Bad request");
       });
   });
+
+  //Task 8: PATCH /api/articles/:article_id
+
+  test("PATCH - 201: responds with the updated article", () => {
+    const inc_votes = 50;
+    const updatedArticle = {
+      title: "Eight pug gifs that remind me of mitch",
+      topic: "mitch",
+      author: "icellusedkars",
+      body: "some gifs",
+      created_at: new Date(1604394720000).toISOString(),
+      votes: 50,
+    };
+    return request(app)
+      .patch("/api/articles/3")
+      .send({ inc_votes })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.article).toMatchObject({
+          article_id: expect.any(Number),
+          ...updatedArticle,
+        });
+      });
+  });
+
+  //Patch Error Handeling
+
+  test("PATCH - 404: responds with route not found", () => {
+    return request(app)
+      .patch("/api/articles/6500")
+      .send({ inc_votes: 60 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("Route not found");
+      });
+  });
+
+  test("PATCH - 400: responds with bad request when passed a string in inc_votes", () => {
+    return request(app)
+      .patch("/api/articles/2")
+      .send({ inc_votes: "vote" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Invalid vote type");
+      });
+  });
+
+  test("PATCH - 400: responds with bad request when passed invalid article id", () => {
+    return request(app)
+      .patch("/api/articles/vote1")
+      .send({ inc_votes: 100 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad request");
+      });
+  });
+
+  test("PATCH - 400: responds with bad request when passed empty object", () => {
+    return request(app)
+      .patch("/api/articles/2")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Invalid vote type");
+      });
+  });
 });
 
 describe("/api/articles/:article_id/comments", () => {
