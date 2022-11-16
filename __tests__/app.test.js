@@ -188,6 +188,34 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
 
+  test("POST - 400 responds with an error when passed an empty body", () => {
+    const newComment = {
+      author: "icellusedkars",
+      body: "",
+    };
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad request");
+      });
+  });
+  // This error can work with User not found, but I want it to be bad request if invalid user data.
+  test("POST - 400 responds with an error when passed an empty user", () => {
+    const newComment = {
+      author: " ",
+      body: "Any body to fulfill this test",
+    };
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad request");
+      });
+  });
+
   test("POST - 404 responds with an error of route not found", () => {
     return request(app)
       .post("/api/articles/2000/comments")
