@@ -170,7 +170,13 @@ describe("/api/articles/:article_id/comments", () => {
       .send(newComment)
       .expect(201)
       .then(({ body }) => {
-        expect(body.comment.body).toEqual(newComment.body);
+        expect(body.comment).toMatchObject({
+          comment_id: expect.any(Number),
+          article_id: 2,
+          created_at: expect.any(String),
+          votes: 0,
+          ...newComment,
+        });
       });
   });
 

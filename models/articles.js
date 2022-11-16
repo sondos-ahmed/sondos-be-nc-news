@@ -56,7 +56,7 @@ exports.insertComment = (article_id, newcomment) => {
 
   return db
     .query(
-      "INSERT INTO comments (article_id,author,body) VALUES ($1,$2,$3) RETURNING body;",
+      "INSERT INTO comments (article_id,author,body) VALUES ($1,$2,$3) RETURNING *;",
       values
     )
     .then(({ rows }) => {
