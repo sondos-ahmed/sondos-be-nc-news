@@ -160,7 +160,7 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
 
-  test("POST - 201 resoponds with created object", () => {
+  test("POST - 201: resoponds with created object", () => {
     const newComment = {
       author: "icellusedkars",
       body: "This is a new comment for icellusedkars user",
@@ -174,7 +174,7 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
 
-  test("POST - 400 responds with an error of user not found", () => {
+  test("POST - 400: responds with an error of user not found", () => {
     const newComment = {
       author: "sondos",
       body: "This is a new comment for sondos user",
@@ -188,7 +188,7 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
 
-  test("POST - 400 responds with an error when passed an empty body", () => {
+  test("POST - 400: responds with an error when passed an empty body", () => {
     const newComment = {
       author: "icellusedkars",
       body: "",
@@ -202,7 +202,7 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
   // This error can work with User not found, but I want it to be bad request if invalid user data.
-  test("POST - 400 responds with an error when passed an empty user", () => {
+  test("POST - 400: responds with an error when passed an empty user", () => {
     const newComment = {
       author: " ",
       body: "Any body to fulfill this test",
@@ -216,7 +216,7 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
 
-  test("POST - 404 responds with an error of route not found", () => {
+  test("POST - 404: responds with an error of route not found", () => {
     return request(app)
       .post("/api/articles/2000/comments")
       .send({ author: "test", body: "try different test to fil the gap." })
@@ -226,7 +226,7 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
 
-  test("POST - 400 responds with an error of bad request", () => {
+  test("POST - 400: responds with an error of bad request", () => {
     return request(app)
       .post("/api/articles/banana/comments")
       .send({})
