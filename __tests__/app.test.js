@@ -159,6 +159,88 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body.message).toEqual("Route not found");
       });
   });
+
+  test("POST - 201: resoponds with created object", () => {
+    const newComment = {
+      author: "icellusedkars",
+      body: "This is a new comment for icellusedkars user",
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toMatchObject({
+          comment_id: expect.any(Number),
+          article_id: 2,
+          created_at: expect.any(String),
+          votes: 0,
+          ...newComment,
+        });
+      });
+  });
+
+  test("POST - 400: responds with an error of user not found", () => {
+    const newComment = {
+      author: "sondos",
+      body: "This is a new comment for sondos user",
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("User not found");
+      });
+  });
+
+  test("POST - 400: responds with an error when passed an empty body", () => {
+    const newComment = {
+      author: "icellusedkars",
+      body: "",
+    };
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad request");
+      });
+  });
+  // This error can work with User not found, but I want it to be bad request if invalid user data.
+  test("POST - 400: responds with an error when passed an empty user", () => {
+    const newComment = {
+      author: " ",
+      body: "Any body to fulfill this test",
+    };
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad request");
+      });
+  });
+
+  test("POST - 404: responds with an error of route not found", () => {
+    return request(app)
+      .post("/api/articles/2000/comments")
+      .send({ author: "test", body: "try different test to fil the gap." })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("Route not found");
+      });
+  });
+
+  test("POST - 400: responds with an error of bad request", () => {
+    return request(app)
+      .post("/api/articles/banana/comments")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad request");
+      });
+  });
 });
 
 // describe("", () => {

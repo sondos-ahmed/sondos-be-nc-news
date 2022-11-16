@@ -41,3 +41,30 @@ exports.selectArticleComments = (article_id) => {
       return rows;
     });
 };
+
+exports.insertComment = (article_id, newcomment) => {
+  const { author, body } = newcomment;
+  const values = [article_id, author, body];
+
+  if (typeof body !== "string" || body.length <= 1) {
+    return Promise.reject({ status: 400, message: "Bad request" });
+  }
+
+  if (typeof author !== "string" || author.length <= 1) {
+    return Promise.reject({ status: 400, message: "Bad request" });
+  }
+
+  return db
+    .query(
+      "INSERT INTO comments (article_id,author,body) VALUES ($1,$2,$3) RETURNING *;",
+      values
+    )
+    .then(({ rows }) => {
+      return rows[0];
+    })
+    .catch((err) => {
+      if (err) {
+        return Promise.reject({ status: 400, message: "User not found" });
+      }
+    });
+};
