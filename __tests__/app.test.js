@@ -107,6 +107,7 @@ describe("/api/articles/:article_id", () => {
         expect(body.message).toBe("Bad request");
       });
   });
+
   //Task 8: PATCH /api/articles/:article_id
 
   test("PATCH - 201: responds with the updated article", () => {
@@ -314,8 +315,7 @@ describe("/api/users", () => {
       .get("/api/users")
       .expect(200)
       .then(({ body }) => {
-        console.log(body.users);
-
+        expect(body.users).toHaveLength(4);
         body.users.forEach((user) => {
           expect(user).toMatchObject({
             username: expect.any(String),
