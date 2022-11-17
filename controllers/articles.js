@@ -7,9 +7,14 @@ const {
 } = require("../models/articles");
 
 exports.getAllArticles = (req, res, next) => {
-  selectAllArticles().then((articles) => {
-    res.send({ articles });
-  });
+  const { topic, order, sort_by } = req.query;
+  selectAllArticles(topic, order, sort_by)
+    .then((articles) => {
+      res.send({ articles });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.getArticleById = (req, res, next) => {
