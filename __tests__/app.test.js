@@ -182,7 +182,7 @@ describe("/api/articles/:article_id", () => {
       .then(({ body }) => {
         const article = body.article;
 
-        expect(article).toEqual({
+        expect(article).toMatchObject({
           article_id: 5,
           title: "UNCOVERED: catspiracy to bring down democracy",
           topic: "cats",
@@ -266,6 +266,42 @@ describe("/api/articles/:article_id", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.message).toBe("Invalid vote type");
+      });
+  });
+
+  // Task 11: GET /api/articles/:article_id (comment count)
+
+  test("GET - 200: responds with an object of the corresponding id with comment ", () => {
+    return request(app)
+      .get("/api/articles/5")
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+
+        expect(article).toMatchObject({
+          article_id: 5,
+          title: "UNCOVERED: catspiracy to bring down democracy",
+          topic: "cats",
+          author: "rogersop",
+          body: "Bastet walks amongst us, and the cats are taking arms!",
+          created_at: "2020-08-03T13:14:00.000Z",
+          votes: 0,
+          comment_count: "2",
+        });
+      });
+  });
+
+  test("GET - 200: responds with an object of the corresponding id with comment count when no comments.", () => {
+    return request(app)
+      .get("/api/articles/4")
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+
+        expect(article).toMatchObject({
+          article_id: 4,
+          comment_count: "0",
+        });
       });
   });
 });
