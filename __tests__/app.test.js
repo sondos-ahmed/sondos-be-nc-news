@@ -78,6 +78,110 @@ describe("/api/articles", () => {
         expect(body.articles).toBeSortedBy("created_at", { descending: true });
       });
   });
+
+  //Task 10 GET /api/articles (queries)
+
+  test("GET - 200: responds with an array of articles in a topic specified in the query", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toHaveLength(1);
+        body.articles.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: "cats",
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+          });
+        });
+      });
+  });
+  test("GET - 200: responds with an array of articles sorted by a valid column specified in the query", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("title", { descending: true });
+      });
+  });
+  test("GET - 200: responds with an array of articles ordered by default", () => {
+    return request(app)
+      .get("/api/articles?order=DESC")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+
+  test("GET - 200: responds with an array filtered by topic, sorted by valid coulmn and in ascending order at once", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch&sort_by=author&&order=ASC")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("author", { ascending: true });
+        expect(body.articles).toHaveLength(11);
+        body.articles.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: "mitch",
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+          });
+        });
+      });
+  });
+
+  test("GET - 200: responds with an empty array if topic exists but don't have articles ", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toEqual([]);
+      });
+  });
+
+  //Task 10: Errot Handeling
+
+  test("GET: 400 - INVALID SORTBY QUERY", () => {
+    return request(app)
+      .get("/api/articles?sort_by=nonsence")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.message).toBe("Invalid sort query");
+      });
+  });
+  test("GET - 400: INVALID ORDER QUERY", () => {
+    return request(app)
+      .get("/api/articles?order=blahblahblah")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.message).toBe("Invalid order query");
+      });
+  });
+
+  test("GET - 404: responds with route not found  ", () => {
+    return request(app)
+      .get("/api/article?topic=cats")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.message).toBe("Route not found");
+      });
+  });
+
+  test("GET - 400: TOPIC DOES NOT EXIST ", () => {
+    return request(app)
+      .get("/api/articles?topic=dogs")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.message).toBe("Topic doesn't exist");
+      });
+  });
+  //==============================================================
 });
 describe("/api/articles/:article_id", () => {
   test("GET - 200: responds with an object of the corresponding id ", () => {
@@ -87,7 +191,7 @@ describe("/api/articles/:article_id", () => {
       .then(({ body }) => {
         const article = body.article;
 
-        expect(article).toEqual({
+        expect(article).toMatchObject({
           article_id: 5,
           title: "UNCOVERED: catspiracy to bring down democracy",
           topic: "cats",
@@ -171,6 +275,42 @@ describe("/api/articles/:article_id", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.message).toBe("Invalid vote type");
+      });
+  });
+
+  // Task 11: GET /api/articles/:article_id (comment count)
+
+  test("GET - 200: responds with an object of the corresponding id with comment ", () => {
+    return request(app)
+      .get("/api/articles/5")
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+
+        expect(article).toMatchObject({
+          article_id: 5,
+          title: "UNCOVERED: catspiracy to bring down democracy",
+          topic: "cats",
+          author: "rogersop",
+          body: "Bastet walks amongst us, and the cats are taking arms!",
+          created_at: "2020-08-03T13:14:00.000Z",
+          votes: 0,
+          comment_count: "2",
+        });
+      });
+  });
+
+  test("GET - 200: responds with an object of the corresponding id with comment count when no comments.", () => {
+    return request(app)
+      .get("/api/articles/4")
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+
+        expect(article).toMatchObject({
+          article_id: 4,
+          comment_count: "0",
+        });
       });
   });
 });
