@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { checkTopic } = require("../utils");
 
 exports.selectAllArticles = (
   topic,
@@ -7,6 +8,12 @@ exports.selectAllArticles = (
 ) => {
   const validColumn = ["title", "topic", "author", "created_at", "votes"];
   const validOrder = ["DESC", "ASC"];
+  //let found = true;
+
+  // if (topic) {
+  //   found = checkTopic(topic);
+  // }
+
   if (!validColumn.includes(sorted_by)) {
     return Promise.reject({ status: 400, message: "Invalid sort query" });
   }
@@ -14,6 +21,10 @@ exports.selectAllArticles = (
   if (!validOrder.includes(order)) {
     return Promise.reject({ status: 400, message: "Invalid order query" });
   }
+
+  // if (found === false) {
+  //   return Promise.reject({ status: 400, message: "Topic doesn't exist" });
+  // }
   const values = [];
   let selectQuery = `
     SELECT articles.author,articles.title,articles.article_id ,articles.topic,articles.created_at,articles.votes, COUNT(comments.article_id) AS comment_count FROM articles JOIN  users ON articles.author=users.username
@@ -27,9 +38,12 @@ exports.selectAllArticles = (
   selectQuery += ` 
   GROUP BY comments.article_id, articles.article_id 
   ORDER BY articles.${sorted_by} ${order};`;
+
   return db.query(selectQuery, values).then(({ rows }) => {
     if (rows.length === 0) {
-      return Promise.reject({ status: 400, message: "Topic doesn't exist" });
+      return checkTopic(topic).then((data) => {
+        return [];
+      });
     }
     return rows;
   });
@@ -43,8 +57,10 @@ exports.selectArticleById = (article_id) => {
     });
   }
   const selectQuery = `
-    SELECT * FROM articles WHERE article_id=$1
-    ;`;
+  SELECT articles.*, COUNT(comments.article_id) AS comment_count FROM articles 
+  LEFT JOIN comments ON articles.article_id=comments.article_id
+  WHERE articles.article_id=$1
+  GROUP BY comments.article_id, articles.article_id ;`;
   return db.query(selectQuery, [article_id]).then(({ rows }) => {
     if (!rows[0]) {
       return Promise.reject();
