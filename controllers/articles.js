@@ -3,6 +3,7 @@ const {
   selectArticleById,
   selectArticleComments,
   insertComment,
+  updateArticleVotes,
 } = require("../models/articles");
 
 exports.getAllArticles = (req, res, next) => {
@@ -49,6 +50,24 @@ exports.postComment = (req, res, next) => {
     })
     .then((comment) => {
       res.status(201).send({ comment });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+//Task 8: update article votes
+
+exports.patchArticleVotes = (req, res, next) => {
+  const id = req.params.article_id;
+  const inc_votes = req.body.inc_votes;
+  // check if the article exist
+  selectArticleById(id)
+    .then(() => {
+      return updateArticleVotes(id, inc_votes);
+    })
+    .then((article) => {
+      res.status(201).send({ article });
     })
     .catch((err) => {
       next(err);
