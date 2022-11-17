@@ -1,4 +1,3 @@
-const { rows } = require("pg/lib/defaults");
 const db = require("../db/connection");
 
 exports.selectAllArticles = () => {
@@ -66,5 +65,23 @@ exports.insertComment = (article_id, newcomment) => {
       if (err) {
         return Promise.reject({ status: 400, message: "User not found" });
       }
+    });
+};
+
+exports.updateArticleVotes = (article_id, inc_votes) => {
+  if (isNaN(inc_votes)) {
+    return Promise.reject({ status: 400, message: "Invalid vote type" });
+  }
+
+  if (isNaN(article_id)) {
+    return Promise.reject({ status: 400, message: "Bad request" });
+  }
+  return db
+    .query(
+      "UPDATE articles SET votes=votes+$2 WHERE article_id=$1 RETURNING *;",
+      [article_id, inc_votes]
+    )
+    .then(({ rows }) => {
+      return rows[0];
     });
 };
