@@ -17,6 +17,22 @@ beforeEach(() => {
   return seed({ topicData, userData, articleData, commentData });
 });
 
+describe("GET /api", () => {
+  test("GET - 200: responds with JSON describing all the available endpoints on your API", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        expect(Object.values(body.file)).toHaveLength(10);
+
+        Object.values(body.file).forEach((endpoint) => {
+          expect(endpoint).toMatchObject({
+            description: expect.any(String),
+          });
+        });
+      });
+  });
+});
 describe("Error Handeling", () => {
   test("GET - 404 responds with Route not found when requesting non existing page", () => {
     return request(app)
