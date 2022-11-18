@@ -26,4 +26,4 @@ Once you have cloned this repo create .env files to store the database names in 
 
 # Minimum system requirements
 
-Minimum versions: Please use Node.js version 18 or above and Postgres version 14 or above
+Minimum versions: Please use Node.js version 16.17.1 or above and Postgres version 8.7.3 or above
