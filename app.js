@@ -9,9 +9,13 @@ const {
 } = require("./controllers/articles");
 const { getAllUsers } = require("./controllers/users");
 
+const { getJSON } = require("./controllers/api");
+
 const app = express();
 
 app.use(express.json());
+
+app.get("/api", getJSON);
 
 app.get("/api/topics", getAllTopics);
 
@@ -25,7 +29,6 @@ app.post("/api/articles/:article_id/comments", postComment);
 
 app.patch("/api/articles/:article_id", patchArticleVotes);
 
-//GET-all-users
 app.get("/api/users", getAllUsers);
 
 app.use((err, req, res, next) => {

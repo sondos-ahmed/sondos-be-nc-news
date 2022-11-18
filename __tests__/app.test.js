@@ -8,6 +8,8 @@ const {
   commentData,
 } = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
+const { readFile } = require("fs/promises");
+const { json } = require("express");
 
 afterAll(() => {
   return db.end();
@@ -17,6 +19,24 @@ beforeEach(() => {
   return seed({ topicData, userData, articleData, commentData });
 });
 
+describe("GET /api", () => {
+  test("GET - 200: responds with JSON describing all the available endpoints on your API", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        const parsedBody = JSON.parse(body.file, null, 2);
+
+        expect(Object.values(parsedBody)).toHaveLength(10);
+
+        Object.values(parsedBody).forEach((endpoint) => {
+          expect(endpoint).toMatchObject({
+            description: expect.any(String),
+          });
+        });
+      });
+  });
+});
 describe("Error Handeling", () => {
   test("GET - 404 responds with Route not found when requesting non existing page", () => {
     return request(app)
