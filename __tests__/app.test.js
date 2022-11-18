@@ -476,4 +476,26 @@ describe("/api/users", () => {
   });
 });
 
-//describe("",()=>{test("",()=>{})});
+//Task 12  DELETE /api/comments/:comment_id
+describe("/api/comments/:comment_id", () => {
+  test("DELETE - 400: responds with no content ", () => {
+    return request(app)
+      .delete("/api/comments/comment")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toEqual("Bad request");
+      });
+  });
+  test("DELETE - 204: responds with no content ", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+
+  test("DELETE - 404: responds with no content ", () => {
+    return request(app)
+      .delete("/api/comments/400")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toEqual("comment not found");
+      });
+  });
+});

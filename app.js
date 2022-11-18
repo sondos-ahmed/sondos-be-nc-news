@@ -8,6 +8,7 @@ const {
   patchArticleVotes,
 } = require("./controllers/articles");
 const { getAllUsers } = require("./controllers/users");
+const { deleteComment } = require("./controllers/comments");
 
 const app = express();
 
@@ -25,8 +26,9 @@ app.post("/api/articles/:article_id/comments", postComment);
 
 app.patch("/api/articles/:article_id", patchArticleVotes);
 
-//GET-all-users
 app.get("/api/users", getAllUsers);
+
+app.delete("/api/comments/:comment_id", deleteComment);
 
 app.use((err, req, res, next) => {
   if (err.status && err.message) {
