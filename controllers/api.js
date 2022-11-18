@@ -5,3 +5,7 @@ exports.getJSON = (req, res, next) => {
 
   res.send({ file });
 };
+
+exports.getHealth = (req, res, next) => {
+  res.status(200).send({ message: "server up and running" });
+};
