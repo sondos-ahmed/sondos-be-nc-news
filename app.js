@@ -10,13 +10,18 @@ const {
 const { getAllUsers } = require("./controllers/users");
 const { deleteComment } = require("./controllers/comments");
 
+const { getJSON } = require("./controllers/api");
+
 const app = express();
 
 app.use(express.json());
 
+
 app.get("/api/health", (res, req) => {
   res.status(20).send({ message: "server up and running" });
 });
+
+app.get("/api", getJSON);
 
 app.get("/api/topics", getAllTopics);
 
