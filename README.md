@@ -1,6 +1,6 @@
 # News Articles API
 
-This repo create the backend functionalities of news articles app. It service different endpoints to search in the database. This repo gives the ability to list the articles,article comments, add comments, get all users in the database, which they are the author for each comment. You can find a description of each point in endpoints.json.
+This repo create the backend functionalities of news articles app. It serve different endpoints to search in the database. This repo gives the ability to list the articles,article comments, add comments and get all users in the database, which they are the author for each comment. You can find a description of each endpoint in endpoints.json.
 
 The link for this API can be found here:
 
