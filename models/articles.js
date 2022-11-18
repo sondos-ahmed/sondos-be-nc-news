@@ -8,11 +8,6 @@ exports.selectAllArticles = (
 ) => {
   const validColumn = ["title", "topic", "author", "created_at", "votes"];
   const validOrder = ["DESC", "ASC"];
-  //let found = true;
-
-  // if (topic) {
-  //   found = checkTopic(topic);
-  // }
 
   if (!validColumn.includes(sorted_by)) {
     return Promise.reject({ status: 400, message: "Invalid sort query" });
@@ -22,9 +17,6 @@ exports.selectAllArticles = (
     return Promise.reject({ status: 400, message: "Invalid order query" });
   }
 
-  // if (found === false) {
-  //   return Promise.reject({ status: 400, message: "Topic doesn't exist" });
-  // }
   const values = [];
   let selectQuery = `
     SELECT articles.author,articles.title,articles.article_id ,articles.topic,articles.created_at,articles.votes, COUNT(comments.article_id) AS comment_count FROM articles JOIN  users ON articles.author=users.username
@@ -41,7 +33,7 @@ exports.selectAllArticles = (
 
   return db.query(selectQuery, values).then(({ rows }) => {
     if (rows.length === 0) {
-      return checkTopic(topic).then((data) => {
+      return checkTopic(topic).then(() => {
         return [];
       });
     }
