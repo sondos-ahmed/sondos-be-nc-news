@@ -1,7 +1,5 @@
-const { readFile } = require("fs/promises");
+const endpoints = require("../endpoints.json");
 
 exports.readJSON = () => {
-  return readFile("./endpoints.json", "utf-8").then((file) => {
-    return file;
-  });
+  return endpoints;
 };

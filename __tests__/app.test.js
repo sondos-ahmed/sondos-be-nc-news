@@ -8,8 +8,6 @@ const {
   commentData,
 } = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
-const { readFile } = require("fs/promises");
-const { json } = require("express");
 
 afterAll(() => {
   return db.end();
@@ -25,11 +23,9 @@ describe("GET /api", () => {
       .get("/api")
       .expect(200)
       .then(({ body }) => {
-        const parsedBody = JSON.parse(body.file, null, 2);
+        expect(Object.values(body.file)).toHaveLength(10);
 
-        expect(Object.values(parsedBody)).toHaveLength(10);
-
-        Object.values(parsedBody).forEach((endpoint) => {
+        Object.values(body.file).forEach((endpoint) => {
           expect(endpoint).toMatchObject({
             description: expect.any(String),
           });
