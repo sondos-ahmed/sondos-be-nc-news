@@ -17,6 +17,16 @@ beforeEach(() => {
   return seed({ topicData, userData, articleData, commentData });
 });
 
+describe("/api/health", () => {
+  test("GET - 200: responds with server up and running", () => {
+    return request(app)
+      .get("/api/health")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.message).toBe("server up and running");
+      });
+  });
+});
 describe("GET /api", () => {
   test("GET - 200: responds with JSON describing all the available endpoints on your API", () => {
     return request(app)
