@@ -11,8 +11,11 @@ const { getAllUsers } = require("./controllers/users");
 const { deleteComment } = require("./controllers/comments");
 
 const { getJSON, getHealth } = require("./controllers/api");
+const cors = require("cors");
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 
