@@ -4,7 +4,7 @@ This repo create the backend functionalities of news articles app. It serve diff
 
 The link for this API can be found here:
 
-https://helpful-foal-tie.cyclic.app/
+https://helpful-foal-tie.cyclic.app/api
 
 # Set up
 
